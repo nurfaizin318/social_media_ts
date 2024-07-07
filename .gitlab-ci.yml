@@ -14,7 +14,7 @@ variables:
   DATABASE_URL: mysql://root:123456@localhost:3306/uberin
 
 before_script:
-  - apt-get update -q && apt-get install -qqy --no-install-recommends mysql-client
+  - apt-get update -q && apt-get install -qqy --no-install-recommends default-mysql-client
   - mysql --user=root --password=\"$MYSQL_ROOT_PASSWORD\" --host=mysql < src/main/sql/database.sql
   
 cache:
