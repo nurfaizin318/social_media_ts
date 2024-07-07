@@ -1,30 +1,32 @@
 image: node:20.15.0
 
-services:
-  - mysql:9.0.0
-
-variables:
-  MYSQL_DATABASE: uberin
-  MYSQL_ROOT_PASSWORD: 123456
-
 stages:
+  - install
   - test
-  - deploy
 
-connect_and_install:
+
+cache:
+  paths:
+    - node_modules/
+
+install_dependencies:
+  stage: install
+  script:
+    - npm install
+  artifacts:
+    paths:
+      - node_modules/
+
+test:
   stage: test
   image: mysql
+  services:
+    - name: mysql:latest
+      alias: mysql
+  variables:
+    MYSQL_ROOT_PASSWORD: 123456
+    MYSQL_DATABASE: uberin
+  before_script:
+   - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
   script:
-    - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
-    - mysql -h mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "SHOW DATABASES;"
-    - npm install
-    - npx prisma migrate deploy --skip-seed  # Ubah sesuai dengan perintah prisma Anda
-
-deploy_job:
-  stage: deploy
-  script:
-    - echo "Deploying your application..."  # Tambahkan perintah atau skrip deploy sesuai kebutuhan
-  tags:
-    - docker
-  environment:
-    name: production
+    - npm test
