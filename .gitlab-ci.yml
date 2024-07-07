@@ -17,6 +17,7 @@ before_script:
   - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
   - mysql --version
   - sleep 20
+  - mysql --protocol=tcp -u root -P 3304 -h mysql -e "create database ticketOnline; use ticketOnline;"
 
 cache:
   paths:
