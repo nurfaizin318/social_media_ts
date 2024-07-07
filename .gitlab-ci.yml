@@ -20,6 +20,8 @@ install:
 test:
   stage: test
   image: mysql
+  needs:
+    - install
   services:
     - name: mysql:latest
       alias: mysql
@@ -30,6 +32,3 @@ test:
    - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
   script:
     - npm test
-  artifacts:
-    paths:
-      - node_modules/
