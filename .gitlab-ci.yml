@@ -8,39 +8,18 @@ stages:
   - deploy
 
 
-variables:
-  MYSQL_DATABASE: uberin
-  MYSQL_USER: root
-  MYSQL_PASSWORD: 123456
-  DATABASE_URL: mysql://root:123456@localhost:3306/uberin
-
 cache:
   paths:
     - node_modules/
 
 before_script:
-
-     # ENV is exported as a path to your "ENV" file, 
-        # this is copying it to a local '.env' file
-  - cp $ENV .env
-        # If you need it, this is a way to export the
-        # environment variables inside your file
-  - source .env; export $(cut -d= -f1 .env);
-        # Debugging the pipelines
-  - ls -lah
   - npm install
 
 
 setup:
   stage: setup
   script:
-    # Install Prisma CLI
-    - npx prisma --version
-    # Wait for MySQL service to be available
-    - until mysql -h mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SHOW DATABASES;" > /dev/null 2>&1; do sleep 10; done
-    # Create the database if it doesn't exist
-    - mysql -h mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;"
-    # Run Prisma migrations
+
     - npx prisma migrate deploy
 
 
