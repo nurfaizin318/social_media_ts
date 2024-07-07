@@ -14,10 +14,8 @@ variables:
   DATABASE_URL: mysql://root:123456@localhost:3306/uberin
 
 before_script:
-  - apt-get update &&  apt-get dist-upgrade && apt-get install -y git curl libmcrypt-dev default-mysql-client
-  - mysql --version
-  - sleep 20
-  - echo "SHOW tables;"| mysql -u root -p"$MYSQL_ROOT_PASSWORD" -h "${MYSQL_HOST}" "${MYSQL_DATABASE}"
+  - apt-get update -q && apt-get install -qqy --no-install-recommends mysql-client
+  - mysql --user=root --password=\"$MYSQL_ROOT_PASSWORD\" --host=mysql < src/main/sql/database.sql
   
 cache:
   paths:
