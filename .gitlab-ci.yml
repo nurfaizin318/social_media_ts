@@ -7,6 +7,12 @@ stages:
   - build
   - deploy
 
+connect:
+  image: mysql
+  script:
+  - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
+
+
 variables:
   MYSQL_DATABASE: uberin
   MYSQL_PASSWORD: 123456
@@ -14,10 +20,9 @@ variables:
   DATABASE_URL: mysql://root:123456@localhost:3306/uberin
 
 before_script: 
-  - apt-get update && apt-get install -y git curl libmcrypt-dev default-mysql-client
+
   - mysql --version
-  - sleep 20
-  - mysql --protocol=tcp -u root -P 3304 -h mysql -e "create database ticketOnline; use ticketOnline;"
+
 
 cache:
   paths:
