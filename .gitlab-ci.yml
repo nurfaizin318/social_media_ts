@@ -19,8 +19,6 @@ install:
 
 test:
   stage: test
-  dependencies:
-    - install_dependencies
   image: mysql
   services:
     - name: mysql:latest
@@ -32,3 +30,6 @@ test:
    - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
   script:
     - npm test
+  artifacts:
+    paths:
+      - node_modules/
