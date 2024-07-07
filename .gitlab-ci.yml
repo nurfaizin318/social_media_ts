@@ -20,6 +20,7 @@ cache:
     - node_modules/
 
 before_script:
+  - sudo apt-get update && sudo apt-get install -y mysql-client
   - mysql --version
   - echo "Setting up MySQL database..."
   - mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE};"
