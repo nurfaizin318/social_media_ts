@@ -1,7 +1,7 @@
+image: node:20.15.0
+
 services:
   - mysql:9.0.0
-  - name: node:latest  # Tambahkan Node.js sebagai layanan
-    alias: node
 
 variables:
   MYSQL_DATABASE: uberin
