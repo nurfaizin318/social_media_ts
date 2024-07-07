@@ -3,6 +3,7 @@ services:
   - mysql:9.0.0
 stages:
   - install
+  - setup
   - test
   - build
   - deploy
@@ -34,19 +35,16 @@ before_script:
         # Debugging the pipelines
   - ls -lah
   - npm install
+  - npx prisma migrate deploy
 
 
 setup:
   stage: setup
   script:
-    # Install Prisma CLI
-    - npx prisma --version
-    # Wait for MySQL service to be available
-    - until mysql -h mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SHOW DATABASES;" > /dev/null 2>&1; do sleep 10; done
-    # Create the database if it doesn't exist
-    - mysql -h mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;"
-    # Run Prisma migrations
-    - npx prisma migrate deploy
+    - apt-get update && apt-get --assume-yes install mysql-server mysql-common mysql-client
+    - service mysql start
+    - echo "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');" | mysql -u root
+    - echo "SELECT 'OK';" | mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -h mysql "$MYSQL_DATABASE"
 
 
 install:
