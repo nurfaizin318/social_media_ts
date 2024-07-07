@@ -2,10 +2,17 @@
 
 # Definisikan stages yang akan digunakan
 stages:
+  - connect
   - install
   - test
   - build
   - deploy
+
+variables:
+  # Configure mysql service (https://hub.docker.com/_/mysql/)
+  MYSQL_DATABASE: uberin
+  MYSQL_ROOT_PASSWORD: 123456
+
 
 # Definisikan layanan yang akan digunakan (Node.js dan MySQL)
 services:
@@ -14,10 +21,12 @@ services:
   - name: mysql:9.0.0
     alias: mysql
     entrypoint: ["docker-entrypoint.sh", "mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
-    environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: uberin
-      MYSQL_PASSWORD: 123456
+
+
+connect:
+  image: mysql
+  script:
+  - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
 
 # Definisikan job untuk setiap stage
 install_dependencies:
