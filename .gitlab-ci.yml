@@ -11,4 +11,4 @@ connect:
   image: mysql
   script:
   - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
-  - mysql -h mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "SHOW DATABASES;
+  - mysql -h mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "SHOW DATABASES";
