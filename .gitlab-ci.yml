@@ -1,11 +1,6 @@
 image: node:20.15.0
 services:
   - mysql:9.0.0
-stages:
-  - install
-  - test
-  - build
-  - deploy
 
 connect:
   image: mysql
@@ -13,42 +8,3 @@ connect:
   - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
 
 
-variables:
-  MYSQL_DATABASE: uberin
-  MYSQL_PASSWORD: 123456
-  MYSQL_ROOT_PASSWORD: 123456
-  DATABASE_URL: mysql://root:123456@localhost:3306/uberin
-
-before_script: 
-
-  - mysql --version
-
-
-cache:
-  paths:
-    - node_modules/
-
-
-install:
-  stage: install
-  script:
-    - npm install
-    - npx prisma migrate deploy
-
-test:
-  stage: test
-  script:
-    - npm test
-
-build:
-  stage: build
-  script:
-    - npm run build
-  artifacts:
-    paths:
-      - dist/
-      
-deploy:
-  stage: deploy
-  script:
-    - echo "Deploying to production server"
