@@ -27,7 +27,7 @@ describe('POST /api/map/place', () => {
     });
 
 
-    it('should error if empty place request', async () => {
+    it('should success get Place', async () => {
         const response = await supertest(server)
             .post("/api/map/place")
             .set('Authorization', `Bearer ${process.env.TEST_TOKEN}`)

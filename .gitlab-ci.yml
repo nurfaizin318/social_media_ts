@@ -1,5 +1,6 @@
 image: node:20.15.0
-
+services:
+  - mysql:9.0.0
 stages:
   - install
   - test
@@ -11,6 +12,14 @@ cache:
     - node_modules/
 
 before_script:
+     # ENV is exported as a path to your "ENV" file, 
+        # this is copying it to a local '.env' file
+  - cp $ENV .env
+        # If you need it, this is a way to export the
+        # environment variables inside your file
+  - source .env; export $(cut -d= -f1 .env);
+        # Debugging the pipelines
+  - ls -lah
   - npm install
 
 install:
