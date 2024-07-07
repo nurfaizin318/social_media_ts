@@ -32,5 +32,7 @@ test:
     MYSQL_DATABASE: uberin
   before_script:
    - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
+   - npx prisma generate
+   - npx prisma migrate deploy
   script:
-    - npm test
+    - npm run test
