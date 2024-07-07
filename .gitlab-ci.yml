@@ -1,70 +1,15 @@
-# .gitlab-ci.yml
+services:
+  - mysql:9.0.0
 
-# Definisikan stages yang akan digunakan
-stages:
-  - connect
-  - install
-  - test
-  - build
-  - deploy
 
 variables:
   # Configure mysql service (https://hub.docker.com/_/mysql/)
   MYSQL_DATABASE: uberin
   MYSQL_ROOT_PASSWORD: 123456
 
-
-# Definisikan layanan yang akan digunakan (Node.js dan MySQL)
-services:
-  - name: node:20.15.0
-    alias: node
-  - name: mysql:9.0.0
-    alias: mysql
-    entrypoint: ["docker-entrypoint.sh", "mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
-
-
 connect:
   image: mysql
   script:
   - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
-
-# Definisikan job untuk setiap stage
-install_dependencies:
-  stage: install
-  script:
-    - npm install
-    - npx prisma migrate deploy
-  tags:
-    - docker
-
-run_tests:
-  stage: test
-  script:
-    - npm run  test  # Sesuaikan dengan perintah untuk menjalankan tes Anda
-    - npm run lint  # Contoh: menjalankan linter
-  tags:
-    - docker
-
-build_application:
-  stage: build
-  script:
-    - npm run build  # Contoh: menjalankan build aplikasi
-  artifacts:
-    paths:
-      - dist/  # Contoh: path untuk hasil build
-  tags:
-    - docker
-
-deploy_to_production:
-  stage: deploy
-  script:
-    - echo "Deploying to production..."  # Contoh: perintah untuk deploy
-    # Tambahkan perintah atau skrip deploy sesuai kebutuhan Anda
-  environment:
-    name: production
-    url: https://your-production-url.com  # Contoh: URL produksi
-  tags:
-    - docker
-  when: manual  # Atur untuk manual jika diperlukan konfirmasi deploy
-
-# Tambahkan konfigurasi tambahan sesuai kebutuhan proyek Anda
+  - echo "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');" | mysql -u root
+  - echo "SELECT 'OK';" | mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -h mysql "$MYSQL_DATABASE"
