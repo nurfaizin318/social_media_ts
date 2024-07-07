@@ -20,14 +20,12 @@ cache:
   paths:
     - node_modules/
 
-before_script:
-
 
 
 setup:
   stage: setup
   script:
-    - apt-get update && apt-get --assume-yes install mariadb-server mysql-common  mariadb-client
+    - sudo apt-get update && sudo apt-get install -y mariadb-client
     - service mysql start
     - echo "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');" | mysql -u root
     - echo "SELECT 'OK';" | mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -h mysql "$MYSQL_DATABASE"
