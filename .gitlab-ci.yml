@@ -10,7 +10,6 @@ stages:
 
 variables:
   MYSQL_DATABASE: uberin
-  MYSQL_USER: root
   MYSQL_PASSWORD: 123456
   MYSQL_ROOT_PASSWORD: 123456
   DATABASE_URL: mysql://root:123456@localhost:3306/uberin
@@ -26,7 +25,7 @@ cache:
 setup:
   stage: setup
   script:
-    - apt-get update && sudo apt-get install -y mariadb-client
+    - apt-get update &&  apt-get install -y mariadb-client
     - service mysql start
     - echo "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');" | mysql -u root
     - echo "SELECT 'OK';" | mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -h mysql "$MYSQL_DATABASE"
