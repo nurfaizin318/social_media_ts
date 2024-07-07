@@ -11,5 +11,5 @@ connect:
   image: mysql
   script:
   - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
-  - echo "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');" | mysql -u root
+  - service mysql start
   - echo "SELECT 'OK';" | mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -h mysql "$MYSQL_DATABASE"
