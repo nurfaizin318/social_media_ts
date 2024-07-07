@@ -4,6 +4,8 @@ stages:
   - install
   - test
 
+before_script:
+  - npm install
 
 cache:
   paths:
