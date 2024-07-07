@@ -1,20 +1,15 @@
-import {User} from "@prisma/client";
+import { User } from "@prisma/client";
 
-export type UserResponse = {
+export type RegisterRequest = {
     username: string;
-    name: string;
-    token?: string;
-}
-
-export type CreateUserRequest = {
-    username: string;
-    name: string;
     password: string;
+    email: string;
+    phone_number: string;
 }
 
 export type LoginUserRequest = {
-    username: string;
-    password: string;
+    prefix: string
+    phone_number: string
 }
 
 export type UpdateUserRequest = {
@@ -22,9 +17,20 @@ export type UpdateUserRequest = {
     password?: string;
 }
 
-export function toUserResponse(user: User): UserResponse {
-    return {
-        name: user.name,
-        username: user.username
-    }
+
+export type LoginResponse = {
+    username: string;
+    token: string;
+    profile: any
+}
+
+export type OTPRequest = {
+    email: string;
+
+}
+
+export type VerifyOTPRequest = {
+    code: string;
+    email: string;
+
 }

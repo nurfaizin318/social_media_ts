@@ -1,17 +1,17 @@
-import {Request, Response, NextFunction} from "express";
-import {CreateUserRequest, LoginUserRequest, UpdateUserRequest} from "../model/user-model";
+import {Request, Response, NextFunction, response} from "express";
+import {RegisterRequest, LoginUserRequest, UpdateUserRequest, OTPRequest, VerifyOTPRequest} from "../model/user-model";
 import {UserService} from "../service/user-service";
-import {UserRequest} from "../type/user-request";
+
 
 export class UserController {
 
     static async register(req: Request, res: Response, next: NextFunction) {
         try {
-            const request: CreateUserRequest = req.body as CreateUserRequest;
-            const response = await UserService.register(request);
-            res.status(200).json({
-                data: response
-            })
+            const request: RegisterRequest = req.body as RegisterRequest;
+            const response = await UserService.register(request,res,next);
+            res.status(200).json(response
+                
+            )
         } catch (e) {
             next(e);
         }
@@ -21,46 +21,63 @@ export class UserController {
         try {
             const request: LoginUserRequest = req.body as LoginUserRequest;
             const response = await UserService.login(request);
-            res.status(200).json({
-                data: response
-            })
+            res.status(200).json(response)
         } catch (e) {
             next(e);
         }
     }
 
-    static async get(req: UserRequest, res: Response, next: NextFunction) {
+    static async sendOtp(req: Request, res: Response, next: NextFunction) {
         try {
-            const response = await UserService.get(req.user!);
-            res.status(200).json({
-                data: response
-            })
+            const request: OTPRequest = req.body as OTPRequest;
+            const response = await UserService.sendOtp(request);
+            res.status(200).json(response)
         } catch (e) {
             next(e);
         }
     }
 
-    static async update(req: UserRequest, res: Response, next: NextFunction) {
+    static async validateOtp(req: Request, res: Response, next: NextFunction) {
         try {
-            const request: UpdateUserRequest = req.body as UpdateUserRequest;
-            const response = await UserService.update(req.user!, request);
-            res.status(200).json({
-                data: response
-            })
+            const request: VerifyOTPRequest = req.body as VerifyOTPRequest;
+            const response = await UserService.verifyOtp(request);
+            res.status(200).json(response)
         } catch (e) {
             next(e);
         }
     }
+    // static async get(req: UserRequest, res: Response, next: NextFunction) {
+    //     try {
+    //         const response = await UserService.get(req.user!);
+    //         res.status(200).json({
+    //             data: response
+    //         })
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
 
-    static async logout(req: UserRequest, res: Response, next: NextFunction) {
-        try {
-            await UserService.logout(req.user!);
-            res.status(200).json({
-                data: "OK"
-            })
-        } catch (e) {
-            next(e);
-        }
-    }
+    // static async update(req: UserRequest, res: Response, next: NextFunction) {
+    //     try {
+    //         const request: UpdateUserRequest = req.body as UpdateUserRequest;
+    //         const response = await UserService.update(req.user!, request);
+    //         res.status(200).json({
+    //             data: response
+    //         })
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
+
+    // static async logout(req: UserRequest, res: Response, next: NextFunction) {
+    //     try {
+    //         await UserService.logout(req.user!);
+    //         res.status(200).json({
+    //             data: "OK"
+    //         })
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
 
 }

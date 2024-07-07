@@ -14,40 +14,80 @@ datasource db {
 }
 
 model User {
-  username String  @id @db.VarChar(100)
-  password String  @db.VarChar(100)
-  name     String  @db.VarChar(100)
-  token    String? @db.VarChar(100)
-
-  contacts Contact[]
-
-  @@map("users")
+  id         Int      @id @default(autoincrement())
+  username   String
+  password   String
+  latitude   String?
+  longitude  String?
+  email      String
+  socket_id  String?
+  phone_number      String
+  created_at DateTime @default(now())
+  orders     Orders[] @relation("UserOrders")
 }
 
-model Contact {
-  id         Int     @id @default(autoincrement())
-  first_name String  @db.VarChar(100)
-  last_name  String? @db.VarChar(100)
-  email      String? @db.VarChar(100)
-  phone      String? @db.VarChar(20)
-  username   String  @db.VarChar(100)
-
-  user      User      @relation(fields: [username], references: [username])
-  addresses Address[]
-
-  @@map("contacts")
+model Orders {
+  id          Int      @id @default(autoincrement())
+  from        String
+  destination String
+  distance    Int
+  driver_id   Int
+  user_id     Int
+  rideType_id Int
+  created_at  DateTime? @default(now())
+  user     User?     @relation("UserOrders", fields: [user_id], references: [id])
+  driver   Driver?   @relation(fields: [driver_id], references: [id])
+  rideType RideType? @relation(fields: [rideType_id], references: [id])
 }
 
-model Address {
-  id          Int     @id @default(autoincrement())
-  street      String? @db.VarChar(255)
-  city        String? @db.VarChar(100)
-  province    String? @db.VarChar(100)
-  country     String  @db.VarChar(100)
-  postal_code String  @db.VarChar(10)
-  contact_id  Int
+model Driver {
+  id          Int      @id @default(autoincrement())
+  username    String
+  password    String
+  latitude    String
+  ready       Boolean
+  longitude   String
+  otp         String?
+  email       String
+  vehicle_id  Int
+  sokcet_id   String?
+  created_at  DateTime? @default(now())
+  rideType    RideType? @relation(fields: [rideType_id], references: [id])
+  rideType_id Int
+  vehicle     Vehicle?  @relation(fields: [vehicle_id], references: [id])
+  orders      Orders[]
+}
 
-  contact Contact @relation(fields: [contact_id], references: [id])
+model Menu {
+  id      Int     @id @default(autoincrement())
+  title   String
+  icon    String
+  color   String
+  enabled Boolean
+}
 
-  @@map("addresses")
+model Banner {
+  id          Int    @id @default(autoincrement())
+  url         String
+  description String
+  title       String
+}
+
+model Vehicle {
+  id      Int      @id @default(autoincrement())
+  license String
+  color   String
+  brand   String
+  type    String
+  drivers Driver[]
+}
+
+model RideType {
+  id      Int      @id @default(autoincrement())
+  type    String
+  icon    String
+  price   Int
+  isPromo String
+  driver  Driver[]
+  orders  Orders[]
 }

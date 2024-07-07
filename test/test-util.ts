@@ -1,13 +1,16 @@
-import {prismaClient} from "../src/application/database";
+import { prismaClient } from "../src/application/database";
 import bcrypt from "bcrypt";
-import {Address, Contact, User} from "@prisma/client";
+import { User } from "@prisma/client";
+import jwt from "jsonwebtoken"
+import { error } from "winston";
 
 export class UserTest {
 
+    
     static async delete() {
         await prismaClient.user.deleteMany({
             where: {
-                username: "test"
+                phone_number: "088888888888"
             }
         })
     }
@@ -16,9 +19,10 @@ export class UserTest {
         await prismaClient.user.create({
             data: {
                 username: "test",
-                name: "test",
                 password: await bcrypt.hash("test", 10),
-                token: "test"
+                email: "test",
+                phone_number: "088888888888"
+
             }
         })
     }
@@ -37,86 +41,21 @@ export class UserTest {
         return user;
     }
 
-}
+    static  generateToken(user:string):string | undefined{
+        const payload = {phone_number: "085641380676" }; // Payload token
+        const secret = "ini-rahasia"; // Kunci rahasia untuk menandatangani token
+        const options = { expiresIn: '1h' }; // Opsi token, seperti waktu kedaluwarsa
 
-export class ContactTest {
-
-    static async deleteAll() {
-        await prismaClient.contact.deleteMany({
-            where: {
-                username: "test"
-            }
-        })
-    }
-
-    static async create() {
-        await prismaClient.contact.create({
-            data: {
-                first_name: "test",
-                last_name: "test",
-                email: "test@example.com",
-                phone: "08999999",
-                username: "test"
-            }
-        });
-    }
-
-    static async get(): Promise<Contact> {
-        const contact = await prismaClient.contact.findFirst({
-            where: {
-                username: "test"
-            }
-        });
-
-        if (!contact) {
-            throw new Error("Contact is not found");
+        try{
+            const token =  jwt.sign(payload, secret, { expiresIn: '1h' });
+            console.log("token",token)
+            return token
+        } catch{
+            console.log("error generate token",error)
+           throw new Error
         }
-
-        return contact;
+   
+   
     }
-
 }
 
-export class AddressTest {
-
-    static async deleteAll() {
-        await prismaClient.address.deleteMany({
-            where: {
-                contact: {
-                    username: "test"
-                }
-            }
-        })
-    }
-
-    static async create() {
-        const contact = await ContactTest.get();
-        await prismaClient.address.create({
-            data: {
-                contact_id: contact.id,
-                street: "Jalan test",
-                city: "Kota test",
-                province: "Provinsi test",
-                country: "Indonesia",
-                postal_code: "11111"
-            }
-        })
-    }
-
-    static async get(): Promise<Address> {
-        const address = await prismaClient.address.findFirst({
-            where: {
-                contact: {
-                    username: "test"
-                }
-            }
-        });
-
-        if (!address) {
-            throw new Error("Address is not found")
-        }
-
-        return address;
-    }
-
-}
