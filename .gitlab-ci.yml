@@ -21,7 +21,6 @@ install_dependencies:
 
 test:
   stage: test
-  image: mysql
   needs:
     - install_dependencies
   services:
