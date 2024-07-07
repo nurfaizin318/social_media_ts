@@ -7,6 +7,14 @@ stages:
   - build
   - deploy
 
+
+variables:
+  MYSQL_DATABASE: uberin
+  MYSQL_ROOT_PASSWORD: my_password
+  MYSQL_USER: my_user
+  MYSQL_PASSWORD: my_user_password
+  DATABASE_URL: mysql://my_user:my_user_password@mysql:3306/my_database
+
 cache:
   paths:
     - node_modules/
@@ -21,6 +29,20 @@ before_script:
         # Debugging the pipelines
   - ls -lah
   - npm install
+
+
+setup:
+  stage: setup
+  script:
+    # Install Prisma CLI
+    - npx prisma --version
+    # Wait for MySQL service to be available
+    - until mysql -h mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "SHOW DATABASES;" > /dev/null 2>&1; do sleep 10; done
+    # Create the database if it doesn't exist
+    - mysql -h mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -e "CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;"
+    # Run Prisma migrations
+    - npx prisma migrate deploy
+
 
 install:
   stage: install
