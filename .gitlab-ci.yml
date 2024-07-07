@@ -2,6 +2,12 @@ image: node:20.15.0
 services:
   - mysql:9.0.0
 
+
+variables:
+  # Configure mysql service (https://hub.docker.com/_/mysql/)
+  MYSQL_DATABASE: uberin
+  MYSQL_ROOT_PASSWORD: 123456
+
 connect:
   image: mysql
   script:
