@@ -2,7 +2,6 @@ image: node:20.15.0
 services:
   - mysql:9.0.0
 stages:
-  - setup
   - install
   - test
   - build
@@ -14,21 +13,16 @@ variables:
   MYSQL_ROOT_PASSWORD: 123456
   DATABASE_URL: mysql://root:123456@localhost:3306/uberin
 
-
+before_script:
+  - apt-get update &&  apt-get dist-upgrade && apt-get install -y git curl libmcrypt-dev default-mysql-client
+  - mysql --version
+  - sleep 20
+  - echo "SHOW tables;"| mysql -u root -p"$MYSQL_ROOT_PASSWORD" -h "${MYSQL_HOST}" "${MYSQL_DATABASE}"
   
 cache:
   paths:
     - node_modules/
 
-
-
-setup:
-  stage: setup
-  script:
-  - apt-get update &&  apt-get dist-upgrade && apt-get install -y git curl libmcrypt-dev default-mysql-client
-  - mysql --version
-  - sleep 20
-  - echo "SHOW tables;"| mysql -u root -p"$MYSQL_ROOT_PASSWORD" -h "${MYSQL_HOST}" "${MYSQL_DATABASE}"
 
 install:
   stage: install
