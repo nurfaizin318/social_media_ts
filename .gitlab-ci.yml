@@ -9,7 +9,7 @@ cache:
   paths:
     - node_modules/
 
-install_dependencies:
+install:
   stage: install
   script:
     - npm install
@@ -19,6 +19,8 @@ install_dependencies:
 
 test:
   stage: test
+  dependencies:
+    - install_dependencies
   image: mysql
   services:
     - name: mysql:latest
