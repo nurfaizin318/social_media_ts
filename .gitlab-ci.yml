@@ -1,58 +1,37 @@
 image: node:20.15.0
-services:
-  - mysql:9.0.0
+
 stages:
-  - setup
   - install
   - test
-  - build
-  - deploy
 
-variables:
-  MYSQL_DATABASE: uberin
-  MYSQL_USER: root
-  MYSQL_PASSWORD: 123456
-  DATABASE_URL: npm install -g heroku
+before_script:
+  - npm install
 
-
-  
 cache:
   paths:
     - node_modules/
 
-before_script:
-
-
-
-setup:
-  stage: setup
-  script:
-    - apt-get update && apt-get --assume-yes install mariadb-server mysql-common  mariadb-client
-    - service mysql start
-    - echo "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('password');" | mysql -u root
-    - echo "SELECT 'OK';" | mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -h mysql "$MYSQL_DATABASE"
-
-
-install:
+install_dependencies:
   stage: install
   script:
     - npm install
-    - npx prisma migrate deploy
+  artifacts:
+    paths:
+      - node_modules/
 
 test:
   stage: test
+  needs:
+    - install_dependencies
+  services:
+    - name: mysql:latest
+      alias: mysql
+  variables:
+    MYSQL_ROOT_PASSWORD: 123456
+    MYSQL_DATABASE: uberin
+  before_script:
+   - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
+   - npx prisma generate
+   - npx prisma migrate deploy
   script:
-    - npm test
-
-build:
-  stage: build
-  script:
-    - npm run build
-  artifacts:
-    paths:
-      - dist/
-      
-deploy:
-  stage: deploy
-  script:
-    - echo "Deploying to production server"
+    - npm run test
