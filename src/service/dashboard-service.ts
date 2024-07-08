@@ -10,7 +10,7 @@ import { prismaClient } from "../application/database";
 
 export class DashboardService {
     static async getBanner(req: Request, res: Response, next: NextFunction):Promise<FormatedResponse> {
-        console.log(req)
+
         let listBanner: BannerResponse[] = [];
 
         try {

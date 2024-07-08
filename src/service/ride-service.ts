@@ -26,7 +26,6 @@ export class RideService  {
     static async getRideType(request: RideTypeRequest, response: Response, next: NextFunction): Promise<FormatedResponse> {
         const rideRequest = Validation.validate(RideValidation.RIDETYPE, request);
 
-
         const result = await MapRepository.getPolyline(rideRequest)
 
         console.log(result.data)

@@ -9,7 +9,7 @@ export class DashboardRepository {
     static async getBanner (): Promise<BannerResponse[]> {
 
         var listBanner: BannerResponse[] = await prismaClient.banner.findMany();
-          console.log(listBanner)
+         
         return listBanner
 
     }

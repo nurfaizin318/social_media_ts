@@ -7,17 +7,6 @@ import { GetListPlaceRequest, GetPolylineRequest } from "../model/map-model";
 
 export class MapController{
 
-    static async getPolyline(req: Request, res: Response, next: NextFunction) {
-        try {
-            
-            const request : GetPolylineRequest =  req.body as GetPolylineRequest
-            const response = await MapServices.getPolyline(request,res,next);
-            res.status(200).json(response)
-        } catch (e) {
-            next(e);
-        }
-    }
-
 
     static async getPlace(req: Request, res: Response, next: NextFunction) {
 

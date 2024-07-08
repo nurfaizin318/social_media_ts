@@ -6,12 +6,9 @@ import {
 } from "../model/user-model";
 import { Validation } from "../validation/validation";
 import { UserValidation } from "../validation/user-validation";
-
 import { prismaClient } from "../application/database";
 import { ResponseError } from "../error/response-error";
 import bcrypt from "bcrypt";
-import { v4 as uuid } from "uuid";
-import { User } from "@prisma/client";
 import { UserRepository } from "../repository/user-repository";
 import { NextFunction, Response } from "express";
 import { FormatedResponse, formatedSuccessResponse } from "../type/user-request";
@@ -77,7 +74,7 @@ export class UserService {
         const key = process.env.JWT_KEY || ""
         const refresh_key = process.env.JWT_REFRESH_KEY || ""
 
-        const accessToken = jwt.sign({phone_number:user.phone_number}, key, { expiresIn: '5s' });
+        const accessToken = jwt.sign({phone_number:user.phone_number}, key, { expiresIn: '1d' });
         const refreshToken = jwt.sign({phone_number:user.phone_number}, refresh_key, { expiresIn: '15d' });
 
         const userResponse = {
@@ -89,7 +86,7 @@ export class UserService {
             refreshToken: refreshToken
 
         }
-        
+
         const resultOtp = await this.sendOtp({email:user.email})
 
         if (resultOtp.success !== true) {
@@ -108,7 +105,7 @@ export class UserService {
         const otpData = createOTP(4, 5); // OTP panjang 6, kadaluarsa 5 menit
         saveOTP(otpRequest.email, otpData);
         const success: Boolean = await sendOTP(otpRequest.email, otpData.otp);
-        console.log(success)
+ 
         if (!success) {
             throw new ResponseError(400, "failed send otp")
         }
@@ -122,7 +119,7 @@ export class UserService {
         const otpRequest = Validation.validate(UserValidation.VERIFYOTP, request);
 
         const success: Boolean = validateOTP(otpRequest.email, otpRequest.code);
-        console.log(success)
+    
         if (!success) {
             throw new ResponseError(400, "your code is wrong")
         }

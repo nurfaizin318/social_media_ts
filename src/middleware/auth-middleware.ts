@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { prismaClient } from "../application/database";
 import { UserRequest } from "../type/user-request";
 import jwt from "jsonwebtoken"
-import { ResponseError } from "../error/response-error";
+
 
 type CustomPayload = {
   phoneNumber: string
@@ -12,7 +11,7 @@ export const authMiddleware = async (req: UserRequest, res: Response, next: Next
 
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
-  const jwtKey = process.env.JWT_KEY || ""
+  const jwtKey = "ini-rahasia"
 
   if (token == null) {
     return res.status(401).json({
@@ -29,12 +28,11 @@ export const authMiddleware = async (req: UserRequest, res: Response, next: Next
           const refreshToken: string = req.headers['refresh-token'] as string;
           const refresh_key = process.env.JWT_REFRESH_KEY || ""
 
-         console.log(refreshToken)
 
           jwt.verify(refreshToken, refresh_key, (err, user) => {
 
             let mayPayload = user as CustomPayload
-            console.log(user)
+        
             if (err) return res.sendStatus(403);
 
             const newAccessToken = jwt.sign({ phone_number: mayPayload.phoneNumber }, refresh_key, { expiresIn: '15m' });

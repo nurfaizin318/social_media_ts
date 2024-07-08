@@ -11,24 +11,6 @@ import { MapRepository } from "../repository/map-repository";
 
 export class MapServices {
 
-    static async getPolyline(request: GetPolylineRequest, response: Response, next: NextFunction): Promise<FormatedResponse> {
-        // const getPopylineRequest = Validation.validate(MapValidation.POLYLINE, request);
-
-        // const result = await MapRepository.getPolyline(getPopylineRequest)
-
-        // console.log(result.data)
-        //     if(result.status !== 200){
-        //        let error = new ResponseError(203,"error from osrm")
-        //        next(error)
-        //     }
-
-        //     let responsePolyline = {
-        //         route: result.data.routes[0].geometry,
-        //         distance: result.data.routes[0].distance / 1000.0,
-           
-        //     }
-        return formatedSuccessResponse({});
-    }
     
     static async getListPlace(request: GetListPlaceRequest, response: Response, next: NextFunction): Promise<FormatedResponse> {
         const getPlaceRequest = Validation.validate(MapValidation.PLACE, request);

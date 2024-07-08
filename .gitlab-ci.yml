@@ -12,7 +12,7 @@ variables:
   MYSQL_DATABASE: uberin
   MYSQL_USER: root
   MYSQL_PASSWORD: 123456
-  DATABASE_URL: mysql://root:123456@localhost:3306/uberin
+  DATABASE_URL: npm install -g heroku
 
 
   

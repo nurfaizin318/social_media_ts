@@ -4,6 +4,11 @@ import { User } from "@prisma/client";
 import jwt from "jsonwebtoken"
 import { error } from "winston";
 
+export type TokenResult = {
+    token: string
+    refreshToken: string
+}
+
 export class UserTest {
 
     
@@ -41,10 +46,10 @@ export class UserTest {
         return user;
     }
 
-    static  generateToken(user:string):string | undefined{
+    static  generateToken():string | undefined{
         const payload = {phone_number: "085641380676" }; // Payload token
         const secret = "ini-rahasia"; // Kunci rahasia untuk menandatangani token
-        const options = { expiresIn: '1h' }; // Opsi token, seperti waktu kedaluwarsa
+       
 
         try{
             const token =  jwt.sign(payload, secret, { expiresIn: '1h' });
