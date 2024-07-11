@@ -32,7 +32,7 @@ export const authMiddleware = async (req: UserRequest, res: Response, next: Next
           jwt.verify(refreshToken, refresh_key, (err, user) => {
 
             let mayPayload = user as CustomPayload
-        
+
             if (err) return res.sendStatus(403);
 
             const newAccessToken = jwt.sign({ phone_number: mayPayload.phoneNumber }, refresh_key, { expiresIn: '15m' });

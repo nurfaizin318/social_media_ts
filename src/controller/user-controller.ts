@@ -9,9 +9,7 @@ export class UserController {
         try {
             const request: RegisterRequest = req.body as RegisterRequest;
             const response = await UserService.register(request,res,next);
-            res.status(200).json(response
-                
-            )
+            res.status(200).json(response)
         } catch (e) {
             next(e);
         }
