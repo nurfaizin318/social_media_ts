@@ -1,7 +1,7 @@
-import {UserTest} from "./test-util";
+import {UserTest} from "../test-util";
 import supertest from "supertest";
-import {server} from "../src/application/web";
-import {logger} from "../src/application/logging";
+import {server} from "../../src/application/web";
+import {logger} from "../../src/application/logging";
 import { PrismaClient } from "@prisma/client";
 
 

@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import { server } from "../src/application/web";
+import { server } from "../../src/application/web";
 import { PrismaClient } from "@prisma/client";
 import nodemailer from 'nodemailer';
 

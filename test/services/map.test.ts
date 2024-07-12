@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import { server } from "../src/application/web";
+import { server } from "../../src/application/web";
 import axios, { AxiosResponse } from "axios";
 
 
