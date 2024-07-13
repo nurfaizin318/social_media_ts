@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  username   String
+  password   String
+  latitude   String?
+  longitude  String?
+  email      String
+  socket_id  String?
+  phone_number      String
+  created_at DateTime @default(now())
+  orders     Orders[] @relation("UserOrders")
+}
+
+model Orders {
+  id          Int      @id @default(autoincrement())
+  from        String
+  destination String
+  distance    Int
+  driver_id   Int
+  user_id     Int
+  rideType_id Int
+  created_at  DateTime? @default(now())
+  user     User?     @relation("UserOrders", fields: [user_id], references: [id])
+  driver   Driver?   @relation(fields: [driver_id], references: [id])
+  rideType RideType? @relation(fields: [rideType_id], references: [id])
+}
+
+model Driver {
+  id          Int      @id @default(autoincrement())
+  username    String
+  password    String
+  latitude    String
+  ready       Boolean
+  longitude   String
+  otp         String?
+  email       String
+  vehicle_id  Int
+  sokcet_id   String?
+  created_at  DateTime? @default(now())
+  rideType    RideType? @relation(fields: [rideType_id], references: [id])
+  rideType_id Int
+  vehicle     Vehicle?  @relation(fields: [vehicle_id], references: [id])
+  orders      Orders[]
+}
+
+model Menu {
+  id      Int     @id @default(autoincrement())
+  title   String
+  icon    String
+  color   String
+  enabled Boolean
+}
+
+model Banner {
+  id          Int    @id @default(autoincrement())
+  url         String
+  description String
+  title       String
+}
+
+model Vehicle {
+  id      Int      @id @default(autoincrement())
+  license String
+  color   String
+  brand   String
+  type    String
+  drivers Driver[]
+}
+
+model RideType {
+  id      Int      @id @default(autoincrement())
+  type    String
+  icon    String
+  price   Int
+  isPromo String
+  driver  Driver[]
+  orders  Orders[]
+}
