@@ -23,8 +23,5 @@ test:
   stage: test
   needs:
     - install_dependencies
-  services:
-    - name: mysql:latest
-      alias: mysql
   script:
     - npm run test
