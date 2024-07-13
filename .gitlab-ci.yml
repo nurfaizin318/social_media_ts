@@ -26,12 +26,5 @@ test:
   services:
     - name: mysql:latest
       alias: mysql
-  variables:
-    MYSQL_ROOT_PASSWORD: 123456
-    MYSQL_DATABASE: uberin
-  before_script:
-   - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DATABASE"
-   - npx prisma generate
-   - npx prisma migrate deploy
   script:
     - npm run test
