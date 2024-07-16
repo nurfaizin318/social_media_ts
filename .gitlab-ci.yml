@@ -55,7 +55,7 @@ deploy:
     - git config user.name "Nur Faizin"
     - git add dist -f
     - git commit -m "Deploy to Heroku"
-    - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git `git subtree split --prefix dist master`:refs/heads/master --force
+    - git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git `git subtree split --prefix dist master`:refs/heads/main --force
   only:
     - main
   dependencies:
