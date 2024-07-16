@@ -45,7 +45,6 @@ build:
 
 deploy:
   stage: deploy
-  image: node:16
   script:
     - apt-get update -y
     - apt-get install curl -y
