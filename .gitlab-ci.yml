@@ -56,7 +56,7 @@ deploy:
     - git config user.name "nur faizin"
     - git add dist -f
     - git commit -m "Deploy to Heroku"
-    - git push heroku main
+    - git push heroku master
   only:
     - main
   dependencies:
