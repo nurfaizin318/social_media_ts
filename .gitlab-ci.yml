@@ -49,4 +49,4 @@ deploy:
     - git remote add heroku https://git.heroku.com/$HEROKU_APP_NAME.git
     - git push heroku HEAD:master
   only:
-    - master
+    - main
