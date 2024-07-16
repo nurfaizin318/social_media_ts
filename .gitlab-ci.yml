@@ -6,6 +6,9 @@ stages:
   - build
   - deploy
 
+variables:
+  HEROKU_APP_NAME: uberin
+
 before_script:
   - npm install
 
