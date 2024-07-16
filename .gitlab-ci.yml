@@ -58,6 +58,6 @@ deploy:
     - git commit -m "Deploy to Heroku"
     - git subtree push --prefix dist heroku master
   only:
-    - master
+    - main
   dependencies:
     - build
