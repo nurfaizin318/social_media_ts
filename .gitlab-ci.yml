@@ -51,6 +51,8 @@ deploy:
     - curl https://cli-assets.heroku.com/install.sh | sh
     - echo $HEROKU_API_KEY | heroku auth:token
     - heroku git:remote -a $HEROKU_APP_NAME
+    - git config user.email "nurfaizin318@gmail.com"
+    - git config user.name "nur faizin"
     - git add dist -f
     - git commit -m "Deploy to Heroku"
     - git subtree push heroku main
