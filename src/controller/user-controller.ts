@@ -1,6 +1,7 @@
 import {Request, Response, NextFunction, response} from "express";
-import {RegisterRequest, LoginUserRequest, UpdateUserRequest, OTPRequest, VerifyOTPRequest} from "../model/user-model";
-import {UserService} from "../service/user-service";
+import {RegisterRequest, LoginUserRequest, UpdateUserRequest, OTPRequest, VerifyOTPRequest, SummaryRequest} from "../model/user-model";
+import { UserService } from "../service/user-service";
+
 
 
 export class UserController {
@@ -44,6 +45,20 @@ export class UserController {
             next(e);
         }
     }
+
+
+    static async summary(req: Request, res: Response, next: NextFunction) {
+        try {
+            const request: SummaryRequest = req.body as SummaryRequest;
+            request.userid = req.params.id
+            const response = await UserService.summary(request);
+            res.status(200).json(response)
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    
     // static async get(req: UserRequest, res: Response, next: NextFunction) {
     //     try {
     //         const response = await UserService.get(req.user!);

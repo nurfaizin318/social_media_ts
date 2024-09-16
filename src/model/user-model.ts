@@ -1,15 +1,16 @@
 import { User } from "@prisma/client";
 
 export type RegisterRequest = {
-    username: string;
-    password: string;
     email: string;
-    phone_number: string;
+    password: string;
+    firstname: string;
+    lastname: string;
 }
 
+
 export type LoginUserRequest = {
-    prefix: string
-    phone_number: string
+    username: string
+    password: string
 }
 
 export type UpdateUserRequest = {
@@ -32,5 +33,10 @@ export type OTPRequest = {
 export type VerifyOTPRequest = {
     code: string;
     email: string;
+
+}
+
+export type SummaryRequest = {
+    userid: string;
 
 }

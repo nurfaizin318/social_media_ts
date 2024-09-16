@@ -3,6 +3,7 @@ import {
     LoginUserRequest,
     OTPRequest,
     VerifyOTPRequest,
+    SummaryRequest,
 } from "../model/user-model";
 import { Validation } from "../validation/validation";
 import { UserValidation } from "../validation/user-validation";
@@ -27,8 +28,8 @@ export class UserService {
 
         if (userIsExist) {
 
-           throw new ResponseError(400, "user exist")
-        
+            throw new ResponseError(400, "user exist")
+
         }
 
         registerRequest.password = await bcrypt.hash(registerRequest.password, 10);
@@ -36,32 +37,41 @@ export class UserService {
         const user = await prismaClient.user.create({
             data: registerRequest
         });
-        
+
         var otpRequest = {
-            email : user.email
+            email: user.email
         }
 
         const resultOtp = await this.sendOtp(otpRequest)
 
         if (resultOtp.success !== true) {
             logger.error("faled gnerate otp", resultOtp)
-            throw new ResponseError(403,"faield generarte otp")
+            throw new ResponseError(403, "faield generarte otp")
         }
 
-            return formatedSuccessResponse("berhasil register, kode otp telah di kirim ke email");
+        return formatedSuccessResponse("berhasil register, kode otp telah di kirim ke email");
     }
 
     static async login(request: LoginUserRequest): Promise<FormatedResponse> {
+
         const loginRequest = Validation.validate(UserValidation.LOGIN, request);
-        const phoneNumber = `${loginRequest.prefix}${loginRequest.phone_number}`
-        const cleanPhoneNumber = phoneNumber.startsWith('+') ? phoneNumber.substring(1) : phoneNumber;
 
-        let user = await prismaClient.user.findFirst({
-            where: {
-                phone_number: cleanPhoneNumber
-            }
-        });
+        const { username, password } = loginRequest;
 
+
+        // Cari pengguna berdasarkan email
+        const user = await prismaClient.user.findUnique({ where: { email: username } });
+
+        if (!user) {
+            throw new Error('User not found');
+        }
+
+        // Verifikasi kata sandi
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordValid) {
+            throw new Error('Invalid password');
+        }
         if (user === null) {
             throw new ResponseError(401, " user not found");
         }
@@ -74,24 +84,25 @@ export class UserService {
         const key = process.env.JWT_KEY || ""
         const refresh_key = process.env.JWT_REFRESH_KEY || ""
 
-        const accessToken = jwt.sign({phone_number:user.phone_number}, key, { expiresIn: '1d' });
-        const refreshToken = jwt.sign({phone_number:user.phone_number}, refresh_key, { expiresIn: '15d' });
+        const accessToken = jwt.sign({ phone_number: username }, key, { expiresIn: '1d' });
+        const refreshToken = jwt.sign({ phone_number:username }, refresh_key, { expiresIn: '15d' });
 
         const userResponse = {
-            id:user.id,
-            email:user.email,
-            phone_number:user.phone_number,
-            username:user.username,
+            id: user.id,
+            email: user.email,
+            bio: user.bio,
+            firstname:user.firstname,
+            lastname: user.firstname,
             token: accessToken,
             refreshToken: refreshToken
 
         }
 
-        const resultOtp = await this.sendOtp({email:user.email})
+        const resultOtp = await this.sendOtp({ email: user.email })
 
         if (resultOtp.success !== true) {
             logger.error("faled gnerate otp", resultOtp)
-            throw new ResponseError(403,"faield generarte otp")
+            throw new ResponseError(403, "faield generarte otp")
         }
         const response = formatedSuccessResponse(userResponse);
 
@@ -99,13 +110,15 @@ export class UserService {
         return response;
     }
 
+ 
+ 
     static async sendOtp(request: OTPRequest): Promise<FormatedResponse> {
         const otpRequest = Validation.validate(UserValidation.SENDOTP, request);
 
         const otpData = createOTP(4, 5); // OTP panjang 6, kadaluarsa 5 menit
         saveOTP(otpRequest.email, otpData);
         const success: Boolean = await sendOTP(otpRequest.email, otpData.otp);
- 
+
         if (!success) {
             throw new ResponseError(400, "failed send otp")
         }
@@ -119,7 +132,7 @@ export class UserService {
         const otpRequest = Validation.validate(UserValidation.VERIFYOTP, request);
 
         const success: Boolean = validateOTP(otpRequest.email, otpRequest.code);
-    
+
         if (!success) {
             throw new ResponseError(400, "your code is wrong")
         }
@@ -128,5 +141,32 @@ export class UserService {
         return response;
     }
 
+    static async summary(request: SummaryRequest): Promise<FormatedResponse> {
+
+
+
+        try {
+            const data = await prismaClient.post.findMany({
+                where : {user_id : Number(request.userid)},
+                select:{
+                    id: true,
+                    user_id: true,
+                    content: true,
+                    media_url: true,
+                    _count: {
+                        select : {
+                            Like : true,
+                            Comment : true
+                        },
+                        
+                    }
+                }
+            })
+
+            return formatedSuccessResponse(data);
+        } catch (error) {
+            throw new ResponseError(400,error as any)
+        }
+    }
 
 }

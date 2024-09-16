@@ -32,7 +32,7 @@ import { logger } from "../application/logging";
   export function validateOTP(email: string, otp: string): boolean {
     
     const otpData = otpStore[email]
-   console.log(otpData)
+   console.log(otpStore)
     console.log("otp request",otp)
     if (!otpData) {
       return false;

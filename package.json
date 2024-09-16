@@ -13,9 +13,9 @@
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
     },
-    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"]
-
-    
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.ts"
+    ]
   },
   "author": "Eko Kurniawan Khannedy",
   "license": "ISC",
@@ -28,6 +28,7 @@
     "chai": "^5.1.1",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.13",
     "socket.io": "^4.7.5",
     "uuid": "^9.0.1",
@@ -43,6 +44,7 @@
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/mapbox__polyline": "^1.0.5",
+    "@types/multer": "^1.4.12",
     "@types/nodemailer": "^6.4.15",
     "@types/supertest": "^6.0.2",
     "@types/uuid": "^9.0.8",

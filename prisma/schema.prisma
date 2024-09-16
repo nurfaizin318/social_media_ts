@@ -14,80 +14,100 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  username   String
-  password   String
-  latitude   String?
-  longitude  String?
-  email      String
-  socket_id  String?
-  phone_number      String
-  created_at DateTime @default(now())
-  orders     Orders[] @relation("UserOrders")
+  id             Int       @id @default(autoincrement())
+  firstname      String    @db.VarChar(50)
+  lastname       String    @db.VarChar(50)
+  email          String    @unique @db.VarChar(100)
+  password       String    @db.VarChar(255)
+  socket_id      String?    @db.VarChar(20)
+  bio            String?   @db.Text
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  Post           Post[]
+  Comment        Comment[]
+  Like           Like[]
+
+  friendshipsFrom Friendship[] @relation("FriendshipsFrom")
+
+  friendshipsTo Friendship[] @relation("FriendshipsTo")
+
+  messageFrom Message[] @relation("MessageFrom")
+
+  messageTo    Message[]      @relation("MessageTo")
+  Notification Notification[]
 }
 
-model Orders {
-  id          Int      @id @default(autoincrement())
-  from        String
-  destination String
-  distance    Int
-  driver_id   Int
-  user_id     Int
-  rideType_id Int
-  created_at  DateTime? @default(now())
-  user     User?     @relation("UserOrders", fields: [user_id], references: [id])
-  driver   Driver?   @relation(fields: [driver_id], references: [id])
-  rideType RideType? @relation(fields: [rideType_id], references: [id])
+model Post {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  content   String   @db.Text
+  media_url String?  @db.VarChar(255)
+  timeStamp DateTime @default(now()) @map("time_stamp")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user    User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  Comment Comment[]
+  Like    Like[]
 }
 
-model Driver {
-  id          Int      @id @default(autoincrement())
-  username    String
-  password    String
-  latitude    String
-  ready       Boolean
-  longitude   String
-  otp         String?
-  email       String
-  vehicle_id  Int
-  sokcet_id   String?
-  created_at  DateTime? @default(now())
-  rideType    RideType? @relation(fields: [rideType_id], references: [id])
-  rideType_id Int
-  vehicle     Vehicle?  @relation(fields: [vehicle_id], references: [id])
-  orders      Orders[]
+model Comment {
+  id        Int      @id @default(autoincrement())
+  post_id   Int
+  user_id   Int
+  content   String   @db.Text
+  timeStamp DateTime @default(now()) @map("time_stamp")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
-model Menu {
-  id      Int     @id @default(autoincrement())
-  title   String
-  icon    String
-  color   String
-  enabled Boolean
+model Like {
+  id        Int      @id @default(autoincrement())
+  post_id   Int?     @map("post_id")
+  user_id   Int      @map("user_id")
+  timeStamp DateTime @default(now()) @map("time_stamp")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  post Post? @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  user User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
 
-model Banner {
-  id          Int    @id @default(autoincrement())
-  url         String
-  description String
-  title       String
+model Friendship {
+  id        Int      @id @default(autoincrement())
+  from_id   Int      @map("from_id")
+  to_id     Int      @map("to_id")
+  status    Int      @default(0)
+  timeStamp DateTime @default(now()) @map("time_stamp")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  from User @relation("FriendshipsFrom", fields: [from_id], references: [id], onDelete: Cascade)
+  to   User @relation("FriendshipsTo", fields: [to_id], references: [id], onDelete: Cascade)
 }
 
-model Vehicle {
-  id      Int      @id @default(autoincrement())
-  license String
-  color   String
-  brand   String
-  type    String
-  drivers Driver[]
+model Message {
+  id        Int      @id @default(autoincrement())
+  from_id   Int
+  to_Id     Int
+  content   String
+  isRead    Boolean @map("is_read")@default(false)
+  timeStamp DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  from User @relation("MessageFrom", fields: [from_id], references: [id])
+  to   User @relation("MessageTo", fields: [to_Id], references: [id])
 }
 
-model RideType {
-  id      Int      @id @default(autoincrement())
-  type    String
-  icon    String
-  price   Int
-  isPromo String
-  driver  Driver[]
-  orders  Orders[]
+model Notification {
+  id        Int      @id @default(autoincrement())
+  type      String   @db.VarChar(50)
+  timeStamp DateTime @default(now())
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
 }

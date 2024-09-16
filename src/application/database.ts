@@ -22,9 +22,9 @@ export const prismaClient = new PrismaClient({
     ]
 });
 
-// prismaClient.$on("error", (e) => {
-//     logger.error("database", e);
-// })
+prismaClient.$on("error", (e) => {
+    logger.error("database", e);
+})
 
 // prismaClient.$on("warn", (e) => {
 //     logger.warn("database", e);

@@ -1,37 +1,47 @@
 import express from "express";
-import { DashboardController } from "../controller/dashboard-controller";
 import { authMiddleware } from "../middleware/auth-middleware";
-import { MapController } from "../controller/map-controller";
-import { RideController } from "../controller/ride-controller";
+import { PostController } from "../controller/post-controller";
+import FileUploader from "../helper/multer";
+import { FriendshipController } from "../controller/friendship-controller";
+import { LikeController } from "../controller/like-controller";
+import { UserController } from "../controller/user-controller";
+import { CommenController } from "../controller/comment-controller";
+import { MessageController } from "../controller/message-controller";
+
+
 
 export const apiRouter = express.Router();
+const fileUploader = new FileUploader();
 apiRouter.use(authMiddleware);
 
 
-// Dashboard Api
-apiRouter.get("/api/dashboard/menu", DashboardController.menu);
-apiRouter.get("/api/dashboard/banner", DashboardController.banner);
 
-apiRouter.post("/api/map/place", MapController.getPlace);
-apiRouter.post("/api/ride/ride-type", RideController.getRideType);
-apiRouter.post("/api/ride/order-ride", RideController.searchDriver);
+apiRouter.post("/api/post", fileUploader.single('image'), PostController.store);
+apiRouter.post("/api/post/update", fileUploader.single('image'), PostController.update);
+apiRouter.delete("/api/post/:id", PostController.destroy);
 
 
-// User APi
-// apiRouter.get("/api/users/current", UserController.get);
-// apiRouter.patch("/api/users/current", UserController.update);
-// apiRouter.delete("/api/users/current", UserController.logout);
+apiRouter.get("/api/friendship/:id", FriendshipController.index);
+apiRouter.post("/api/friendship", FriendshipController.store);
+apiRouter.get("/api/friendship/friend/:id", FriendshipController.friendList);
+apiRouter.patch("/api/friendship/:id", FriendshipController.update);
+apiRouter.delete("/api/friendship/:id", FriendshipController.destroy);
 
-// Contact API
-// apiRouter.post("/api/contacts", ContactController.create);
-// apiRouter.get("/api/contacts/:contactId(\\d+)", ContactController.get);
-// apiRouter.put("/api/contacts/:contactId(\\d+)", ContactController.update);
-// apiRouter.delete("/api/contacts/:contactId(\\d+)", ContactController.remove);
-// apiRouter.get("/api/contacts", ContactController.search);
+apiRouter.post("/api/like", LikeController.store);
+apiRouter.get("/api/like/:id", LikeController.index);
+apiRouter.post("/api/like/delete", LikeController.destroy);
 
-// Address API
-// apiRouter.post("/api/contacts/:contactId(\\d+)/addresses", AddressController.create);
-// apiRouter.get("/api/contacts/:contactId(\\d+)/addresses/:addressId(\\d+)", AddressController.get);
-// apiRouter.put("/api/contacts/:contactId(\\d+)/addresses/:addressId(\\d+)", AddressController.update);
-// apiRouter.delete("/api/contacts/:contactId(\\d+)/addresses/:addressId(\\d+)", AddressController.remove);
-// apiRouter.get("/api/contacts/:contactId(\\d+)/addresses", AddressController.list);
+
+apiRouter.get("/api/comment/:id", CommenController.index);
+apiRouter.post("/api/comment", CommenController.store);
+apiRouter.patch("/api/comment", CommenController.update);
+apiRouter.delete("/api/comment/:id", CommenController.destroy);
+
+apiRouter.get("/api/message/:id", MessageController.index);
+
+apiRouter.post("/api/message/detail", MessageController.show);
+apiRouter.post("/api/message", MessageController.store);
+apiRouter.patch("/api/message", MessageController.update);
+apiRouter.delete("/api/message/:id", MessageController.destroy);
+
+apiRouter.get("/api/summary/:id", UserController.summary);

@@ -9,7 +9,7 @@ export class UserRepository {
 
       var total: number = await   prismaClient.user.count({
             where: {
-                phone_number : req.phone_number
+                email : req.email
             }
         });
 

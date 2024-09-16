@@ -3,15 +3,15 @@ import {z, ZodType} from "zod";
 export class UserValidation {
 
     static readonly REGISTER: ZodType = z.object({
-        phone_number: z.string().min(1).max(100),
         email: z.string().min(1).max(100),
-        username: z.string().min(1).max(100),
-        password: z.string().min(1).max(100),
+        password: z.string().min(1).max(50),
+        firstname: z.string().min(2).max(50),
+        lastname : z.string().min(2).max(50)
     });
 
     static readonly LOGIN: ZodType = z.object({
-        prefix: z.string().min(1).max(10),
-        phone_number: z.string().min(1).max(100),
+        username: z.string().min(1).max(100),
+        password: z.string().min(1).max(100),
     });
 
     static readonly UPDATE: ZodType = z.object({
@@ -27,5 +27,7 @@ export class UserValidation {
         code: z.string().min(4).max(4),
         email: z.string().min(1).max(100),
     });
+
+
 
 }
